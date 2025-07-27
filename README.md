@@ -32,8 +32,9 @@ DeepAuto.ai Scaleserve API를 활용한 실시간 스트리밍 챗봇 애플리�
 
 ### 🏆 권장 방법: Docker PostgreSQL + 프론트엔드 + 백엔드
 
-docker-compose up -d
+
 ```
+docker-compose up -d
 
 접속: http://localhost:3000
 
