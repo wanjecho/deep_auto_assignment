@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: chatbot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/chatbot
+      DEEPAUTO_API_KEY: oak-o38t6llngpdjhlga51v4uldwccw39ewa9b0e
+      DEEPAUTO_BASE_URL: https://api.deepauto.ai/openai/v1
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./server:/app
+    command: >
+      sh -c "
+        python init_db.py &&
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./nextjs
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # 외부 포트를 3001로 변경
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    volumes:
+      - ./nextjs:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  postgres_data: 
