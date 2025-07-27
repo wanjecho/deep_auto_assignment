@@ -39,25 +39,6 @@ docker-compose up -d
 접속: http://localhost:3000
 
 ---
-
-### ⚙️ 수동 설정 (고급 사용자용)
-
-<details>
-<summary>세부 설정이 필요한 경우</summary>
-
-#### PostgreSQL 수동 설치 및 실행
-
-```bash
-# PostgreSQL 컨테이너 직접 실행
-docker run --name postgres-chatbot \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=chatbot \
-  -p 5432:5432 \
-  -d postgres:15-alpine
-
-# 컨테이너 재시작 (재부팅 후)
-docker start postgres-chatbot
 ```
 
 #### 환경변수 상세 설정
